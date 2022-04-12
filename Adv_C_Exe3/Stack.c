@@ -100,8 +100,11 @@ void flipBetweenHashes(const char* sentence)
 		{
 			s->head = intervesionWord(s);// flip and print func
 		}
-		else printf("%c", s->head->data);
-		s->head = s->head->next;
+		else
+		{
+			printf("%c", s->head->data);
+			s->head = s->head->next;
+		}
 	}
 	destroyStack(s);
 }
@@ -110,6 +113,7 @@ Stack* intervesionWord(Stack* s)
 {
 	s->head = s->head->next;
 	Stack* newstack = (Stack*)malloc(sizeof(Stack));
+	initStack(newstack);
 	if (!newstack)
 	{
 		printf("\nallocation failed");
