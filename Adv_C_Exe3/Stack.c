@@ -136,7 +136,13 @@ Stack* intervesionWord(Stack* s)
 int isPalindrome(Stack* s)
 {
 	// לבדוק 5 ו-6
-	Stack* temp;
+	/*Stack* temp = (Stack*)malloc(sizeof(Stack));
+	if (!temp)
+	{
+		printf("allocation failed\n");
+		exit(1);
+	}
+	initStack(temp);*/
 	Stack* smallstack = (Stack*)malloc(sizeof(Stack));
 	if (!smallstack)
 	{
@@ -145,28 +151,39 @@ int isPalindrome(Stack* s)
 	}
 	initStack(smallstack);
 	int count = 0;
-	temp = s;
-	while (temp != NULL)// check stack size
+	Stack* temp = (Stack*)malloc(sizeof(Stack));
+	if (!temp)
+	{
+		printf("allocation error");
+		return;
+	}
+	initStack(temp);
+	while (s->head != NULL)// check stack size
+	{
 		count++;
-	if (count)// if there is one char in the sentence
+		push(temp, s->head->data);
+		pop(s);
+	}
+	if (count == 1)// if there is one char in the sentence
 		return 1;
 	for (int i = 0; i < count/2; i++)// push into small stack
 	{
-		push(smallstack, temp->head);
-		temp->head = temp->head->next;
+		push(smallstack, temp->head->data);
+		pop(temp);
 	}
 	if (count % 2 == 1) // odd size of stack
 	{
-		temp->head = temp->head->next;
+		pop(temp);
 	}
 	for (int i = 0; i < count/2; i++)// equal test between the stacks
 	{
-		if (smallstack->head != temp->head)
+		if (smallstack->head->data != temp->head->data)
 			return 0;
-		smallstack->head = smallstack->head->next;
-		temp->head = temp->head->next;
+		pop(temp);
+		pop(smallstack);
 	}
 	free(smallstack);
+	free(temp);
 	return 1;
 }
 

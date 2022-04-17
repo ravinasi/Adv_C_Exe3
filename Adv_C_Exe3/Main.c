@@ -24,6 +24,7 @@ void main()
 		printf("allocation failed");
 		exit(1);
 	}
+	initStack(s);
 	strcpy(sentence, string);
 	printf("what would you want to do?\n");
 	printf("1- flip between hashes\n");
@@ -42,9 +43,9 @@ void main()
 		case (2):
 		{
 			int i = 0;
-			while (sentence)
+			while (sentence[i] != NULL)
 			{
-				push(s, sentence[i]);
+				push(s, sentence[i++]);
 			}
 			int res = isPalindrome(s);
 			if (res)
