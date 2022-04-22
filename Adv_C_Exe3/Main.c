@@ -44,7 +44,7 @@ void main()
 			printf("2 - check if a string is palindrom\n");
 			printf("3- rotate a stack\n");
 			printf("enter your choice: ");
-			scanf(" %d", &choice);
+			scanf("%d", &choice);
 			switch (choice)
 			{
 			case (1):
@@ -72,7 +72,7 @@ void main()
 				}
 				Stack* temp = s;
 				printf("enter a number: ");
-				scanf(" %d", &i);
+				scanf("%d", &i);
 				rotateStack(s, i);
 				printf("the new sentence is: ");
 				while (temp != NULL)
@@ -103,14 +103,14 @@ void main()
 			printf("enter numbers to put in queue:\n");
 			for (int i = 0; i < size; i++) // put into new queue
 			{
-				scanf(" %u", &temp);
+				scanf("%u", &temp);
 				enqueue(q, temp);
 			}
 			printf("what you want to do next?\n");
 			printf("1- rotate the queue\n");
 			printf("2- cut and replace the queue\n");
-			printf("3- order the queue");
-			printf("4- exit");
+			printf("3- order the queue\n");
+			printf("4- exit\n");
 			scanf(" %d", &num);
 			while (num != 4)
 			{
@@ -129,13 +129,15 @@ void main()
 				case(3):// sortkidsfirst
 				{
 					sortKidsFirst(q);
+					if (q->head == NULL)
+						break;
 					printQueue(q);
 				}break;
 
 				default:printf("choose again\n");
 					break;
 				}
-				break;
+				
 				scanf(" %d", &num);
 			}
 			printf("you chose to exit\n");

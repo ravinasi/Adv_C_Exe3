@@ -1,8 +1,8 @@
 ﻿#include <stdio.h>
 #include "Queue.h"
 
-void newPlace(Queue* q, unsigned int num);
 void printQueue(Queue* q);
+void changePlace(Queue* q, intNode* prev, intNode* temp, intNode* notinplace);
 /***************** Queue ADT Implementation *****************/
 
 void initQueue(Queue* q)
@@ -179,50 +179,108 @@ void sortKidsFirst(Queue* q)
 		printf("the queue is empty\n");
 		return;
 	} 
-	if (q->head = q->tail)// if there one node
+	if (q->head == q->tail)// if there one node
 		return;
-	Queue* temp = q;
-	while (temp != NULL)
-	{
-		if (temp->head->data < temp->head->next->data)
-		{
-			temp->head = temp->head->next;
-		}
-		else {
-			unsigned int num = dequeue(q);
-			Queue* next = q;
-			Queue* newplace = NULL;
-			while (num < next->head->data)//קטן בהתחלה
-			{
-				newplace = next;
-				next = next->head->next;
-			}
-			newPlace(newplace, num);
-			temp->head = temp->head->next;
-		}
-	}
-}
-
-void newPlace(Queue* q, unsigned int num)// put in the first place
-{
-	intNode* newnode = (intNode*)malloc(sizeof(intNode));
-	if (!newnode)
+	intNode* temp = (intNode*)malloc(sizeof(intNode));
+	if (!temp)
 	{
 		printf("allocation failed");
 		exit(1);
 	}
-	newnode->data = num;
-	newnode->next = q->head;
-	q->head = newnode;
+	temp = q->head;
+	intNode* prev = (intNode*)malloc(sizeof(intNode));
+	if (!prev)
+	{
+		printf("allocation failed");
+		exit(1);
+	}
+	prev = NULL;
+	intNode* notinplace = (intNode*)malloc(sizeof(intNode));
+	if (!notinplace)
+	{
+		printf("allocation failed");
+		exit(1);
+	}
+	notinplace = NULL;
+	
+	while (temp != NULL)
+	{
+		if (temp == q->head)// first node
+		{
+			if (temp->data < temp->next->data)// the right place
+			{
+				prev = temp;
+				temp = temp->next;
+			}
+			else changePlace(q, prev, temp, notinplace);
+		}
+		else// not first node
+		{
+			if (temp->data < temp->next->data || temp->data > prev->data)// the right place
+			{
+				prev = temp;
+				temp = temp->next;
+			}
+			else
+				changePlace(q, prev, temp, notinplace);
+		}
+		if (temp->next == NULL)
+			return;
+	}
+	free(temp);
+	free(notinplace);
+	free(prev);
+}
+
+void changePlace(Queue* q, intNode* prev, intNode* temp, intNode* notinplace)
+{
+	intNode* newplace = q->head;
+	intNode* newplacePrev = NULL;
+	notinplace = temp;
+	if (notinplace == q->head)// delete notinplace from list
+	{
+		q->head = q->head->next;
+		temp = q->head;
+	}
+	else
+	{
+		prev->next = temp->next;
+		temp = prev->next;
+
+	}
+	newplace = q->head;
+	while (newplace->data < notinplace->data)// finds the newplace
+	{
+		newplacePrev = newplace;
+		newplace = newplace->next;
+		if (newplace == NULL)
+			break;
+	}
+	if (newplace != NULL && newplace != q->head)// somewhere in the middle
+	{
+		newplacePrev->next = notinplace;
+		notinplace->next = newplace;
+	}
+	if (newplace == NULL)// if its last
+	{
+		q->tail->next = notinplace;
+		q->tail = notinplace;
+		notinplace->next = NULL;
+	}
+	if (newplace == q->head)// if its first
+	{
+		notinplace->next = q->head;
+		q->head = notinplace;
+	}
 }
 
 void printQueue(Queue* q)
 {
 	printf("the queue is:\n");
-	Queue* temp = q;
+	intNode* temp = q->head;
 	while (temp != NULL)
 	{
-		printf(" %u", temp->head->data);
-		temp->head = temp->head->next;
+		printf(" %u", temp->data);
+		temp = temp->next;
 	}
 }
