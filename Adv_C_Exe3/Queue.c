@@ -72,7 +72,12 @@ int isEmptyQueue(const Queue* q)
 
 void rotateQueue(Queue* q)
 {
-	if (isEmptyQueue(q))
+	if (q == NULL)// q is nullptr
+	{
+		printf("queue need to init first");
+		return;
+	}
+	if (isEmptyQueue(q))// q is empty
 	{
 		printf("the queue is empty\n");
 		return;
@@ -94,6 +99,11 @@ void rotateQueue(Queue* q)
 
 void cutAndReplace(Queue* q)
 {
+	if (q == NULL)
+	{
+		printf("queue need to init first");
+		return;
+	}
 	if (isEmptyQueue(q))// if the queue is empty
 	{
 		printf("the queue is empty\n");
@@ -199,6 +209,11 @@ unsigned int takeLastOut(Queue* q, int size)
 
 void sortKidsFirst(Queue* q)
 {
+	if (q == NULL)
+	{
+		printf("queue need to init first");
+		return;
+	}
 	if (isEmptyQueue(q))
 	{
 		printf("the queue is empty\n");
