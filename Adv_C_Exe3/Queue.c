@@ -106,6 +106,7 @@ void cutAndReplace(Queue* q)
 		size++;
 		temp = temp->next;
 	}
+	temp = q->head;
 	if (size % 2 == 1)// if the size is odd 
 	{
 		int sum = 0;
@@ -293,4 +294,5 @@ void printQueue(Queue* q)
 		printf(" %u", temp->data);
 		temp = temp->next;
 	}
+	printf("\n");
 }

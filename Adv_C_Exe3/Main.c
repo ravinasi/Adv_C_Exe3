@@ -8,17 +8,22 @@ void printQueue(Queue* q);
 
 void main()
 {
-	int option;
-	printf("what would you want to check?\n");
-	printf("1- stack\n");
-	printf("2- queue\n");
-	printf("3- exit\n");
-	scanf(" %d", &option);
-	while (option != 3)
+	int option = -1;
+	while (option != 0)
 	{
+		printf("what would you want to check?\n");
+		printf("1- stack\n");
+		printf("2- queue\n");
+		printf("0- exit\n");
+		scanf(" %d", &option);
 		switch (option)
 		{
-		case(1):// stack
+		case (0):
+		{
+			printf("\nyou chose to exit, bye\n");
+			break;
+		}
+		case (1):// stack
 		{
 			int choice;
 			char string[SIZE];
@@ -105,15 +110,16 @@ void main()
 			{
 				scanf("%u", &temp);
 				enqueue(q, temp);
-			}
-			printf("what you want to do next?\n");
-			printf("1- rotate the queue\n");
-			printf("2- cut and replace the queue\n");
-			printf("3- order the queue\n");
-			printf("4- exit\n");
-			scanf(" %d", &num);
-			while (num != 4)
+			} 
+			num = -1;
+			while (num != 0)
 			{
+				printf("what you want to do next?\n");
+				printf("1- rotate the queue\n");
+				printf("2- cut and replace the queue\n");
+				printf("3- order the queue\n");
+				printf("0- exit\n");
+				scanf(" %d", &num);
 				switch (num)
 				{
 				case(1)://rotate queue
@@ -133,15 +139,17 @@ void main()
 						break;
 					printQueue(q);
 				}break;
-
-				default:printf("choose again\n");
+				case(0)://exit
+				{
+					printf("you chose to exit\n");
+					destroyQueue(q);
 					break;
 				}
-				
-				scanf(" %d", &num);
+				default:printf("try again\n");
+					break;
+				}
+
 			}
-			printf("you chose to exit\n");
-			destroyQueue(q);
 		}
 		default:
 		{
@@ -149,7 +157,5 @@ void main()
 			break;
 		}
 		}
-		scanf(" %d", &option);
 	}
-	printf("you chose to exit, bye\n");
 }
