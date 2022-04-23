@@ -202,6 +202,8 @@ void sortKidsFirst(Queue* q)
 		exit(1);
 	}
 	notinplace = NULL;
+	intNode* newplace = q->head;
+	intNode* newplacePrev = NULL;
 	
 	while (temp != NULL)
 	{
@@ -211,18 +213,57 @@ void sortKidsFirst(Queue* q)
 			{
 				prev = temp;
 				temp = temp->next;
+				if (temp->next == NULL)
+					return;
+				continue;
 			}
-			else changePlace(q, prev, temp, notinplace);
 		}
 		else// not first node
 		{
-			if (temp->data < temp->next->data || temp->data > prev->data)// the right place
+			if (temp->data < temp->next->data && temp->data > prev->data)// the right place
 			{
 				prev = temp;
 				temp = temp->next;
+				if (temp->next == NULL)
+					return;
+				continue;
 			}
-			else
-				changePlace(q, prev, temp, notinplace);
+		}
+		notinplace = temp;
+		if (notinplace == q->head)// delete notinplace from list
+		{
+			q->head = q->head->next;
+			temp = q->head;
+		}
+		else
+		{
+			prev->next = temp->next;
+			temp = prev->next;
+
+		}
+		newplace = q->head;
+		while (newplace->data < notinplace->data)// finds the newplace
+		{
+			newplacePrev = newplace;
+			newplace = newplace->next;
+			if (newplace == NULL)
+				break;
+		}
+		if (newplace != NULL && newplace != q->head)// somewhere in the middle
+		{
+			newplacePrev->next = notinplace;
+			notinplace->next = newplace;
+		}
+		if (newplace == NULL)// if its last
+		{
+			q->tail->next = notinplace;
+			q->tail = notinplace;
+			notinplace->next = NULL;
+		}
+		if (newplace == q->head)// if its first
+		{
+			notinplace->next = q->head;
+			q->head = notinplace;
 		}
 		if (temp->next == NULL)
 			return;
@@ -230,48 +271,6 @@ void sortKidsFirst(Queue* q)
 	free(temp);
 	free(notinplace);
 	free(prev);
-}
-
-void changePlace(Queue* q, intNode* prev, intNode* temp, intNode* notinplace)
-{
-	intNode* newplace = q->head;
-	intNode* newplacePrev = NULL;
-	notinplace = temp;
-	if (notinplace == q->head)// delete notinplace from list
-	{
-		q->head = q->head->next;
-		temp = q->head;
-	}
-	else
-	{
-		prev->next = temp->next;
-		temp = prev->next;
-
-	}
-	newplace = q->head;
-	while (newplace->data < notinplace->data)// finds the newplace
-	{
-		newplacePrev = newplace;
-		newplace = newplace->next;
-		if (newplace == NULL)
-			break;
-	}
-	if (newplace != NULL && newplace != q->head)// somewhere in the middle
-	{
-		newplacePrev->next = notinplace;
-		notinplace->next = newplace;
-	}
-	if (newplace == NULL)// if its last
-	{
-		q->tail->next = notinplace;
-		q->tail = notinplace;
-		notinplace->next = NULL;
-	}
-	if (newplace == q->head)// if its first
-	{
-		notinplace->next = q->head;
-		q->head = notinplace;
-	}
 }
 
 void printQueue(Queue* q)
