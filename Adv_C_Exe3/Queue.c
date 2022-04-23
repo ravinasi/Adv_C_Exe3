@@ -2,7 +2,7 @@
 #include "Queue.h"
 
 void printQueue(Queue* q);
-void changePlace(Queue* q, intNode* prev, intNode* temp, intNode* notinplace);
+unsigned int takeLastOut(Queue* q, int size);
 /***************** Queue ADT Implementation *****************/
 
 void initQueue(Queue* q)
@@ -79,19 +79,17 @@ void rotateQueue(Queue* q)
 	}
 	if (q->head == q->tail)
 		return;
-	intNode* newhead = q->tail;
-	Queue* temp = q;
-	Queue* prev = NULL;
-	Queue* next = q->head->next;
-	while (next != NULL)
+	intNode* temp = q->head;
+	intNode* prev = NULL;
+	while (temp != q->tail)
 	{
-		prev = q;
-		temp->head = temp->head->next;
-		next = next->head->next;
+		prev = temp;
+		temp = temp->next;
 	}
+	prev->next = NULL;
+	temp->next = q->head;
+	q->head = temp;
 	q->tail = prev;
-	newhead->next = q->head;
-	q->head = newhead;
 }
 
 void cutAndReplace(Queue* q)
@@ -102,11 +100,11 @@ void cutAndReplace(Queue* q)
 		return;
 	}
 	int size = 0;
-	Queue* temp = q;
+	intNode* temp = q->head;
 	while (temp != NULL)// check the size of queue
 	{
 		size++;
-		temp = temp->head->next;
+		temp = temp->next;
 	}
 	if (size % 2 == 1)// if the size is odd 
 	{
@@ -114,8 +112,8 @@ void cutAndReplace(Queue* q)
 		unsigned int ave;
 		while (temp != NULL)// sum all the nodes
 		{
-			sum += temp->head->data;
-			temp->head = temp->head->next;
+			sum += temp->data;
+			temp = temp->next;
 		}
 		ave = sum / size;
 		enqueue(q, ave); // add ave to the tail
@@ -152,24 +150,50 @@ void cutAndReplace(Queue* q)
 		unsigned int num = dequeue(q);
 		enqueue(newhead, num);
 	}
-	while (newhead != NULL)// rotate newhead
+	int newsize = size / 2;
+	for (int i = 0; i < size/2; i++)// rotate newhead into temphead
 	{
-		unsigned int num = dequeue(newhead);
+		unsigned int num = takeLastOut(newhead, newsize);
 		enqueue(temphead, num);
+		newsize--;
 	}
-	while (newtail != NULL)// put new tail into original q
-	{
-		unsigned int num = dequeue(newtail);
-		enqueue(q, num);
-	}
-	while (temphead != NULL)//put new head (rotated) into original q
+	while (temphead->head != NULL)//put new head (rotated) into original q
 	{
 		unsigned int num = dequeue(temphead);
+		enqueue(q, num);
+	}
+	while (newtail->head != NULL)// put new tail into original q
+	{
+		unsigned int num = dequeue(newtail);
 		enqueue(q, num);
 	}
 	free(newhead);
 	free(newtail);
 	free(temphead);
+}
+
+unsigned int takeLastOut(Queue* q, int size)
+{
+	unsigned int num = q->tail->data;
+	intNode* temp = NULL;
+	intNode* prev = q->head;
+	if (q->head->next == NULL)
+	{
+		q->head = q->tail = NULL;
+		return num;
+	}
+	if (size == 2)
+		prev = q->head;
+	if (size > 2)
+	{
+		for (int i = 0; i < size - 2; i++)
+			prev = prev->next;
+	}
+	temp = prev->next;
+	prev->next = NULL;
+	q->tail = prev;
+	free(temp);
+	return num;
 }
 
 void sortKidsFirst(Queue* q)
@@ -181,27 +205,9 @@ void sortKidsFirst(Queue* q)
 	} 
 	if (q->head == q->tail)// if there one node
 		return;
-	intNode* temp = (intNode*)malloc(sizeof(intNode));
-	if (!temp)
-	{
-		printf("allocation failed");
-		exit(1);
-	}
-	temp = q->head;
-	intNode* prev = (intNode*)malloc(sizeof(intNode));
-	if (!prev)
-	{
-		printf("allocation failed");
-		exit(1);
-	}
-	prev = NULL;
-	intNode* notinplace = (intNode*)malloc(sizeof(intNode));
-	if (!notinplace)
-	{
-		printf("allocation failed");
-		exit(1);
-	}
-	notinplace = NULL;
+	intNode* temp = q->head;
+	intNode* prev = NULL;
+	intNode* notinplace = NULL;
 	intNode* newplace = q->head;
 	intNode* newplacePrev = NULL;
 	
@@ -268,9 +274,14 @@ void sortKidsFirst(Queue* q)
 		if (temp->next == NULL)
 			return;
 	}
-	free(temp);
-	free(notinplace);
-	free(prev);
+	temp = q->head;
+	prev = NULL;
+	while (temp != NULL)// find the new tail
+	{
+		prev = temp;
+		temp = temp->next;
+	}
+	q->tail = prev;
 }
 
 void printQueue(Queue* q)

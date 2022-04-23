@@ -141,6 +141,7 @@ void main()
 				scanf(" %d", &num);
 			}
 			printf("you chose to exit\n");
+			destroyQueue(q);
 		}
 		default:
 		{
