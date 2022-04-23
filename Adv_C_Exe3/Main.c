@@ -64,7 +64,7 @@ void main()
 				{
 				case (0):// exit
 				{
-					printf("you chose to exit\n");
+					printf("you chose to exit\n\n");
 					destroyStack(s);
 					free(sentence);
 					break;
@@ -72,9 +72,7 @@ void main()
 				case (1):
 				{
 					flipBetweenHashes(sentence);
-					printf("the new sentence is: \n");
-					printStack(s);
-					printf("\n");
+					printf("\n\n");
 					break;
 				}
 				case (2):
@@ -90,10 +88,11 @@ void main()
 					printf("enter a number: ");
 					scanf(" %d", &i);
 					rotateStack(s, i);
+					printf("\n\n");
 				}
 				break;
 				default:
-					printf(" invalid selection, try again");
+					printf(" invalid selection, try again\n\n");
 					break;
 				}
 			}

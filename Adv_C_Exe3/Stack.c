@@ -55,7 +55,7 @@ int isEmptyStack(const Stack* s)
 
 void flipBetweenHashes(const char* sentence)
 {
-	int i=0, hashAmount = 0;	
+	int i = 0, hashAmount = 0;
 	Stack* tempstack = (Stack*)malloc(sizeof(Stack));
 	if (!tempstack)
 	{
@@ -75,23 +75,23 @@ void flipBetweenHashes(const char* sentence)
 		printf("the string is empty");
 		return;
 	}
-	
 	while (sentence[i] != NULL)// put into stack
 	{
 		push(tempstack, sentence[i++]);
 	}
-	Stack* temp = tempstack;
-	while (temp->head != NULL)// flip and count hashes
+	charNode* temp = tempstack->head;
+	while (temp != NULL)// flip and count hashes
 	{
-		push(s, temp->head->data);
-		if (temp->head->data == '#')
+		push(s, temp->data);
+		if (temp->data == '#')
 			hashAmount++;
-		temp->head = temp->head->next;
+		temp = temp->next;
 	}
 	destroyStack(tempstack);
 	if (hashAmount % 2 == 1) // odd number of hashes
 	{
 		printf("odd number of hashes");
+		destroyStack(s);
 		return;
 	}
 	printf("the sentnce is:\n");
@@ -104,7 +104,7 @@ void flipBetweenHashes(const char* sentence)
 		else
 		{
 			printf("%c", s->head->data);
-			s->head = s->head->next;
+			pop(s);
 		}
 	}
 	destroyStack(s);
@@ -123,12 +123,12 @@ Stack* intervesionWord(Stack* s)
 	while (s->head->data != '#')
 	{
 		push(newstack, s->head->data);
-		s->head = s->head->next;
+		pop(s);
 	}
 	while (newstack->head != NULL)
 	{
 		printf("%c", newstack->head->data);
-		newstack->head = newstack->head->next;
+		pop(newstack);
 	}
 	free(newstack);
 	return s->head->next;
