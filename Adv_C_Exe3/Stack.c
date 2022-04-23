@@ -2,6 +2,7 @@
 #include "Stack.h"
 
 Stack* intervesionWord(Stack* s);
+void printStack(Stack* s);
 /***************** Stack ADT Implementation *****************/
 
 void initStack(Stack* s)                         
@@ -135,11 +136,14 @@ Stack* intervesionWord(Stack* s)
 
 int isPalindrome(Stack* s)
 {
-	// לבדוק 5 ו-6
-	// המחסנית המקורית נמחקת
-	
+	if (s == NULL)// s is nullptr
+	{
+		printf("stack need init");
+		return 0;
+	}
 	if (s->head == NULL)// empty stack
 		return 1;
+	charNode* temp = s->head;
 	Stack* smallstack = (Stack*)malloc(sizeof(Stack));
 	if (!smallstack)
 	{
@@ -148,95 +152,136 @@ int isPalindrome(Stack* s)
 	}
 	initStack(smallstack);
 	int count = 0;
-	/*Stack** temp1 = &s;
-	(*temp1)->head = (*temp1)->head->next;*/
-	Stack* temp = (Stack*)malloc(sizeof(Stack));
-	if (!temp)
-	{
-		printf("allocation error");
-		return;
-	}
-	initStack(temp);
-	while (s->head != NULL)// check stack size
+	while (temp != NULL)// check stack size
 	{
 		count++;
-		push(temp, pop(s));
+		temp = temp->next;
 	}
 	if (count == 1)// if there is one char in the sentence
 		return 1;
-	for (int i = 0; i < count/2; i++)// push into small stack
+	temp = s->head;
+	for (int i = 0; i < count / 2; i++)// push into small stack
 	{
-		push(smallstack, temp->head->data);
-		push(s, temp->head->data);
-		pop(temp);
+		push(smallstack, temp->data);
+		temp = temp->next;
 	}
 	if (count % 2 == 1) // odd size of stack
 	{
-		pop(temp);
-		push(s, temp->head->data);
+		temp = temp->next;
 	}
-	for (int i = 0; i < count/2; i++)// equal test between the stacks
+	charNode* smalltemp = smallstack->head;
+	for (int i = 0; i < count / 2; i++)// equal test between the stacks
 	{
-		if (smallstack->head->data != temp->head->data)
+		if (smalltemp->data != temp->data)
 			return 0;
-		push(s, temp->head->data);
-		pop(temp);
-		pop(smallstack);
+		smalltemp = smalltemp->next;
+		temp = temp->next;
 	}
 	free(smallstack);
-	free(temp);
 	return 1;
 }
 
 void rotateStack(Stack* s, int n)
 {
-	//לבדוק על 5 ו-6
+	if (s == NULL)// nullptr
+	{
+		printf("stack is nullptr\n");
+		return;
+	}
+	if (s->head == NULL)// empty stack
+	{
+		printf("the stack is empty\n");
+		return;
+	}
 	if (n <= 0)// if n is negetiv
 	{
-		printf("can't rotate - negetiv number");
+		printf("can't rotate - negetiv number\n");
 		return;
 	}
-	Stack* temp;
+	charNode* temp = s->head;
 	int size = 0;
-	temp = s;
 	while (temp != NULL)// check stack size
+	{
 		size++;
-	if (n >= size)
+		temp = temp->next;
+
+	}
+	if (n > size)
+	{
+		printf("your number is smaller than the sentence\n");
 		return;
-	Stack* helpStack = (Stack*)malloc(sizeof(Stack));
-	if (!helpStack)
+	}
+	if (n == size)
+	{
+		printStack(s);
+		return;
+	}
+	Stack* Newtop = (Stack*)malloc(sizeof(Stack));
+	if (!Newtop)
 	{
 		printf("allocation error");
 		return;
 	}
-	Stack* Newstack = (Stack*)malloc(sizeof(Stack));
-	if (!Newstack)
+	initStack(Newtop);
+	Stack* Newtail = (Stack*)malloc(sizeof(Stack));
+	if (!Newtail)
 	{
 		printf("allocation error");
 		return;
 	}
-	for (int i = 0; i < size - n; i++)// קידום לאיבר
+	initStack(Newtail);
+	for (int i = 0; i < size - n; i++)// get new tail to a new stack
 	{
-		push(helpStack, s->head->data);
-		pop(s);
-		s->head = s->head->next;
+		char c = pop(s);
+		push(Newtail, c);
 	}
-	for (int i = 0; i < n; i++)// push to newstack
+	for (int i = 0; i < n; i++)// get new head to new list
 	{
-		push(Newstack, s->head->data);
-		pop(s);
-		s->head = s->head->next;
-	}	
-	while (helpStack != NULL)
-	{
-		push(s, helpStack->head->data);
-		pop(helpStack);
-		helpStack->head = helpStack->head->next;
+		char c = pop(s);
+		push(Newtop, c);
 	}
-	while (Newstack != NULL)
+	while (Newtail->head != NULL)
 	{
-		push(s, Newstack->head->data);
-		pop(Newstack);
-		Newstack->head = Newstack->head->next;
+		char c = pop(Newtail);
+		push(s, c);
 	}
+	while (Newtop->head != NULL)
+	{
+		char c = pop(Newtop);
+		push(s, c);
+	}
+	printf("the new sentence is: ");
+	printStack(s);
+	printf("\n");
+	free(Newtail);
+	free(Newtop);
+}
+
+void printStack(Stack* s)
+{
+	if (s->head == NULL)
+	{
+		printf("the stack is empty\n");
+		return;
+	}
+	charNode* temp = s->head;
+	Stack* helpstack = (Stack*)malloc(sizeof(Stack));
+	if (!helpstack)
+	{
+		printf("alloction faild\n");
+		exit(1);
+	}
+	initStack(helpstack);
+	while (temp != NULL)
+	{
+		push(helpstack, temp->data);
+		temp = temp->next;
+	}
+	temp = helpstack->head;
+	while (temp != NULL)
+	{
+		printf("%c", temp->data);
+		temp = temp->next;
+	}
+	free(helpstack);
 }

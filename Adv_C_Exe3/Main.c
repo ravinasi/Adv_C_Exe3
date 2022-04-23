@@ -5,6 +5,7 @@
 #include "Queue.h"
 #define SIZE 100
 void printQueue(Queue* q);
+void printStack(Stack* s);
 
 void main()
 {
@@ -25,12 +26,14 @@ void main()
 		}
 		case (1):// stack
 		{
-			int choice;
+			int choice = -1;
+			int i = 0;
 			char string[SIZE];
 			printf("enter a sentence\n");
+			fseek(stdin, 0, SEEK_END);
 			gets(string);
 			int stringSize = strlen(string);
-			char* sentence = (char*)malloc(sizeof(char)* stringSize + 1);
+			char* sentence = (char*)malloc(sizeof(char) * stringSize + 1);
 			if (!sentence)
 			{
 				printf("allocation faild");
@@ -44,54 +47,57 @@ void main()
 			}
 			initStack(s);
 			strcpy(sentence, string);
-			printf("what would you want to do?\n");
-			printf("1- flip between hashes\n");
-			printf("2 - check if a string is palindrom\n");
-			printf("3- rotate a stack\n");
-			printf("enter your choice: ");
-			scanf("%d", &choice);
-			switch (choice)
+			while (sentence[i] != NULL)
 			{
-			case (1):
-				flipBetweenHashes(sentence);
+				push(s, sentence[i++]);
+			}
+			while (choice != 0)
+			{
+				printf("what would you want to do?\n");
+				printf("1- flip between hashes\n");
+				printf("2 - check if a string is palindrom\n");
+				printf("3- rotate a stack\n");
+				printf("0- exit\n");
+				printf("enter your choice: \n");
+				scanf(" %d", &choice);
+				switch (choice)
+				{
+				case (0):// exit
+				{
+					printf("you chose to exit\n");
+					destroyStack(s);
+					free(sentence);
+					break;
+				}
+				case (1):
+				{
+					flipBetweenHashes(sentence);
+					printf("the new sentence is: \n");
+					printStack(s);
+					printf("\n");
+					break;
+				}
+				case (2):
+				{
+					int res = isPalindrome(s);
+					if (res)
+						printf("the sentence is palindrom\n\n");
+					else printf("the sentence is not palindrom\n\n");
+				}
 				break;
-			case (2):
-			{
-				int i = 0;
-				while (sentence[i] != NULL)
+				case (3):
 				{
-					push(s, sentence[i++]);
+					printf("enter a number: ");
+					scanf(" %d", &i);
+					rotateStack(s, i);
 				}
-				int res = isPalindrome(s);
-				if (res)
-					printf("the sentence is palindrom\n");
-				else printf("the sentence is not palindrom\n");
-			}
-			break;
-			case (3):
-			{
-				int i = 0;
-				while (sentence)
-				{
-					push(s, sentence[i]);
-				}
-				Stack* temp = s;
-				printf("enter a number: ");
-				scanf("%d", &i);
-				rotateStack(s, i);
-				printf("the new sentence is: ");
-				while (temp != NULL)
-				{
-					printf("%c", temp->head->data);
-					temp->head = temp->head->next;
-				}
-			}
-			break;
-			default:
-				printf(" invalid selection, try again");
 				break;
+				default:
+					printf(" invalid selection, try again");
+					break;
+				}
 			}
-		}
+		}break;
 		case (2):// queue
 		{
 			int num, size;
@@ -110,7 +116,7 @@ void main()
 			{
 				scanf("%u", &temp);
 				enqueue(q, temp);
-			} 
+			}
 			num = -1;
 			while (num != 0)
 			{
@@ -150,7 +156,7 @@ void main()
 				}
 
 			}
-		}
+		}break;
 		default:
 		{
 			printf("choose again\n");
